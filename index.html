@@ -1,0 +1,420 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#0b1020">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="FC27 Market">
+  <link rel="apple-touch-icon" href="icon-192.png">
+  <link rel="manifest" href="manifest.webmanifest">
+  <title>FC27 Market Opportunities</title>
+  <style>
+    :root{
+      --bg:#080c16;--panel:#111827;--panel2:#0b1220;--line:#273449;
+      --text:#f8fafc;--muted:#94a3b8;--good:#34d399;--warn:#fbbf24;
+      --bad:#fb7185;--accent:#8b5cf6;--blue:#38bdf8;--radius:18px;
+      --safe-top:env(safe-area-inset-top);--safe-bottom:env(safe-area-inset-bottom);
+    }
+    *{box-sizing:border-box}
+    html{background:var(--bg)}
+    body{
+      margin:0;min-height:100vh;color:var(--text);
+      font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+      background:
+        radial-gradient(circle at 10% -5%,rgba(139,92,246,.18),transparent 32%),
+        radial-gradient(circle at 95% 0%,rgba(56,189,248,.10),transparent 30%),
+        var(--bg);
+      padding-top:var(--safe-top);
+      padding-bottom:calc(76px + var(--safe-bottom));
+    }
+    .app{max-width:900px;margin:0 auto;padding:16px}
+    .topbar{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin:4px 0 14px}
+    .brand h1{font-size:26px;line-height:1.05;margin:0;letter-spacing:-.04em}
+    .brand p{margin:6px 0 0;color:var(--muted);font-size:12px}
+    .chip{border:1px solid rgba(52,211,153,.35);background:rgba(52,211,153,.08);color:#a7f3d0;
+      border-radius:999px;padding:7px 9px;font-size:10px;font-weight:800;white-space:nowrap}
+    .view{display:none}.view.active{display:block}
+    .grid{display:grid;grid-template-columns:repeat(12,1fr);gap:12px}
+    .card{background:linear-gradient(180deg,rgba(17,24,39,.97),rgba(15,23,42,.98));
+      border:1px solid var(--line);border-radius:var(--radius);padding:15px}
+    .span-12{grid-column:span 12}.span-6{grid-column:span 6}
+    @media(max-width:720px){.span-6{grid-column:span 12}}
+    h2{font-size:16px;margin:0 0 10px;letter-spacing:-.015em}
+    .sub{color:var(--muted);font-size:11px;line-height:1.45;margin:-2px 0 12px}
+    label{display:block;font-size:10px;color:#cbd5e1;font-weight:800;margin:0 0 5px}
+    input,select,button{font:inherit}
+    input,select{
+      width:100%;background:#0b1220;border:1px solid #334155;color:var(--text);
+      border-radius:12px;padding:11px 12px;outline:none;font-size:16px
+    }
+    input:focus,select:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(139,92,246,.15)}
+    .row2{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+    .row3{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}
+    @media(max-width:560px){.row3{grid-template-columns:1fr}.row2{grid-template-columns:1fr 1fr}}
+    .btn{border:0;border-radius:12px;padding:11px 13px;font-weight:850;background:linear-gradient(135deg,var(--accent),#6d28d9);color:#fff}
+    .btn.secondary{background:#172033;border:1px solid #334155;color:#e2e8f0}
+    .btn.good{background:linear-gradient(135deg,#10b981,#059669)}
+    .buttons{display:flex;gap:8px;flex-wrap:wrap}
+    .kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+    @media(max-width:600px){.kpis{grid-template-columns:1fr 1fr}.kpis .kpi:last-child{grid-column:1/-1}}
+    .kpi{background:#0b1220;border:1px solid #253148;border-radius:13px;padding:11px}
+    .kpi .k{color:var(--muted);font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:.05em}
+    .kpi .v{font-size:20px;font-weight:900;margin-top:3px;letter-spacing:-.03em}
+    .goodtxt{color:var(--good)}.warntxt{color:var(--warn)}.badtxt{color:var(--bad)}
+    .opp{background:#0b1220;border:1px solid #263247;border-radius:15px;padding:13px;margin-bottom:9px}
+    .opp:last-child{margin-bottom:0}
+    .opp.best{border-color:rgba(52,211,153,.42);box-shadow:inset 3px 0 0 rgba(52,211,153,.8)}
+    .opp.watch{border-color:rgba(251,191,36,.32)}
+    .opp.low{border-color:rgba(148,163,184,.22)}
+    .opp-head{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}
+    .opp-name{font-weight:900;font-size:15px}.opp-meta{font-size:10px;color:var(--muted);margin-top:3px}
+    .pill{display:inline-flex;border-radius:999px;padding:5px 7px;border:1px solid #334155;background:#182235;color:#cbd5e1;font-size:9px;font-weight:850}
+    .pill.good{color:#a7f3d0;border-color:rgba(52,211,153,.35);background:rgba(52,211,153,.08)}
+    .pill.warn{color:#fde68a;border-color:rgba(251,191,36,.35);background:rgba(251,191,36,.07)}
+    .opp-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-top:10px}
+    .mini{background:#111827;border:1px solid #253148;border-radius:10px;padding:8px}
+    .mini span{display:block;color:var(--muted);font-size:8px;font-weight:800;text-transform:uppercase;letter-spacing:.05em}
+    .mini strong{display:block;margin-top:2px;font-size:13px}
+    .note{padding:10px 12px;border:1px dashed #334155;border-radius:12px;background:#0b1220;color:var(--muted);font-size:10px;line-height:1.5}
+    .event{display:grid;grid-template-columns:110px 1fr;gap:10px;padding:11px;border:1px solid #263247;background:#0b1220;border-radius:13px;margin-bottom:8px}
+    .event:last-child{margin-bottom:0}.event .time{font-size:11px;font-weight:900;color:#c4b5fd}
+    .event .title{font-size:13px;font-weight:900}.event .desc{font-size:10px;color:var(--muted);line-height:1.45;margin-top:3px}
+    .table-wrap{overflow:auto;border:1px solid #263247;border-radius:13px}
+    table{width:100%;border-collapse:collapse;min-width:620px;background:#0b1220}
+    th,td{padding:10px;border-bottom:1px solid #253148;text-align:left;font-size:11px}
+    th{background:#111827;color:#cbd5e1;font-size:9px;text-transform:uppercase;letter-spacing:.05em}
+    tr:last-child td{border-bottom:0}
+    .nav{
+      position:fixed;z-index:20;left:0;right:0;bottom:0;
+      padding:7px 10px calc(7px + var(--safe-bottom));
+      background:rgba(8,12,22,.95);backdrop-filter:blur(18px);border-top:1px solid #202b3d
+    }
+    .nav-inner{max-width:900px;margin:0 auto;display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+    .nav button{background:transparent;border:0;color:#64748b;border-radius:12px;padding:8px 4px;font-size:10px;font-weight:800}
+    .nav button.active{background:#172033;color:#f8fafc}
+    .nav .ico{display:block;font-size:18px;margin-bottom:2px}
+    .install{
+      display:none;margin-bottom:12px;padding:11px 12px;border:1px solid rgba(56,189,248,.25);
+      background:rgba(56,189,248,.07);border-radius:14px;font-size:11px;color:#bae6fd;line-height:1.45
+    }
+    .install.show{display:block}
+    .install strong{color:#e0f2fe}
+    .tiny{font-size:10px;color:var(--muted);line-height:1.45}
+  </style>
+</head>
+<body>
+  <main class="app">
+    <div class="topbar">
+      <div class="brand">
+        <h1>FC27 Market</h1>
+        <p>Opportunities • buy windows • sell triggers</p>
+      </div>
+      <div class="chip" id="savedChip">Saved locally</div>
+    </div>
+
+    <div id="installTip" class="install">
+      <strong>Install on iPhone:</strong> open this site in Safari → tap Share → <strong>Add to Home Screen</strong>. It will then open like an app.
+    </div>
+
+    <section id="dashboard" class="view active">
+      <div class="grid">
+        <div class="card span-12">
+          <h2>Bankroll</h2>
+          <div class="row2">
+            <div>
+              <label>Current coins</label>
+              <input id="bankroll" type="number" min="0" step="100" value="70000">
+            </div>
+            <div>
+              <label>Risk level</label>
+              <select id="risk">
+                <option value="low">Low</option>
+                <option value="medium" selected>Medium</option>
+                <option value="high">High</option>
+              </select>
+            </div>
+          </div>
+          <div class="kpis" style="margin-top:10px">
+            <div class="kpi"><div class="k">Bankroll</div><div class="v" id="bankrollKpi">70,000</div></div>
+            <div class="kpi"><div class="k">Keep liquid</div><div class="v goodtxt" id="reserveKpi">20,000</div></div>
+            <div class="kpi"><div class="k">Deployable</div><div class="v" id="deployKpi">50,000</div></div>
+          </div>
+        </div>
+
+        <div class="card span-12">
+          <h2>Top opportunities</h2>
+          <div class="sub">Ranks your current rating-tier setups using your saved prices and risk level.</div>
+          <div id="topOpps"></div>
+        </div>
+
+        <div class="card span-12">
+          <h2>Next market window</h2>
+          <div class="event">
+            <div class="time">Thu 07:59 BST</div>
+            <div><div class="title">Rivals reward supply</div><div class="desc">Watch for undercuts in fodder and popular usable golds. Let the first wave of listings hit before buying.</div></div>
+          </div>
+          <div class="event">
+            <div class="time">Fri 25 Sep</div>
+            <div><div class="title">Worldwide launch</div><div class="desc">More pack supply and more buyers. Ordinary golds can weaken; strong gameplay cards can see demand. Only buy clear discounts.</div></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="opportunities" class="view">
+      <div class="card">
+        <h2>Market opportunities</h2>
+        <div class="sub">Buy triggers are calculated from your saved floor prices.</div>
+        <div id="oppList"></div>
+      </div>
+    </section>
+
+    <section id="calendar" class="view">
+      <div class="card">
+        <h2>Buy / sell calendar</h2>
+        <div class="event">
+          <div class="time">Sun–Wed</div>
+          <div><div class="title">Accumulate only obvious bargains</div><div class="desc">Bid below market rather than chasing. Keep cash ready for later-week supply.</div></div>
+        </div>
+        <div class="event">
+          <div class="time">Thu 07:59 BST</div>
+          <div><div class="title">Primary buy window</div><div class="desc">Tradeable Rivals rewards create fresh supply. Look for temporary undercuts, particularly on liquid cards.</div></div>
+        </div>
+        <div class="event">
+          <div class="time">Thu daytime</div>
+          <div><div class="title">Recovery trades</div><div class="desc">If a desirable card was hit by rewards and then stabilises, a rebound trade can become attractive.</div></div>
+        </div>
+        <div class="event">
+          <div class="time">Fri 25 Sep</div>
+          <div><div class="title">Full-launch volatility</div><div class="desc">Huge new supply and demand arrive together. Avoid assuming every card must rise or crash.</div></div>
+        </div>
+        <div class="event">
+          <div class="time">SBC spike</div>
+          <div><div class="title">Sell fodder into demand</div><div class="desc">If an SBC pushes your rating tier higher, take the demand-driven profit rather than waiting indefinitely.</div></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="settings" class="view">
+      <div class="grid">
+        <div class="card span-12">
+          <h2>Market prices</h2>
+          <div class="sub">Edit these whenever the market moves. The app remembers them on this device.</div>
+          <div class="row3">
+            <div><label>84 floor</label><input id="p84" type="number" step="50" value="650"></div>
+            <div><label>85 floor</label><input id="p85" type="number" step="50" value="1000"></div>
+            <div><label>86 floor</label><input id="p86" type="number" step="50" value="3600"></div>
+            <div><label>87 floor</label><input id="p87" type="number" step="50" value="5700"></div>
+            <div><label>88 floor</label><input id="p88" type="number" step="50" value="8500"></div>
+          </div>
+        </div>
+
+        <div class="card span-12">
+          <h2>Trading preferences</h2>
+          <div class="row2">
+            <div><label>Minimum profit / card</label><input id="minProfit" type="number" min="0" step="50" value="500"></div>
+            <div><label>Minimum ROI (%)</label><input id="minRoi" type="number" min="0" step="0.5" value="10"></div>
+          </div>
+          <div class="buttons" style="margin-top:10px">
+            <button class="btn secondary" id="installHelp">How to install on iPhone</button>
+            <button class="btn secondary" id="reset">Reset saved data</button>
+          </div>
+        </div>
+
+        <div class="card span-12">
+          <h2>Current floor table</h2>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Rating</th><th>Saved floor</th><th>Calculated buy trigger</th><th>Use</th></tr></thead>
+              <tbody id="floorTable"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="note span-12">
+          This app stores your balance, preferences and edited market floors in your browser on this device. It does not connect to EA or read your Companion/Web App account.
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <nav class="nav">
+    <div class="nav-inner">
+      <button class="active" data-view="dashboard"><span class="ico">⌂</span>Home</button>
+      <button data-view="opportunities"><span class="ico">↗</span>Opportunities</button>
+      <button data-view="calendar"><span class="ico">◷</span>Calendar</button>
+      <button data-view="settings"><span class="ico">⚙</span>Settings</button>
+    </div>
+  </nav>
+
+<script>
+(() => {
+  const $ = id => document.getElementById(id);
+  const money = n => Math.round(Number(n)||0).toLocaleString('en-GB');
+  const floor50 = n => Math.floor((Number(n)||0)/50)*50;
+
+  const defaults = {
+    bankroll:70000,risk:'medium',minProfit:500,minRoi:10,
+    p84:650,p85:1000,p86:3600,p87:5700,p88:8500
+  };
+  const key='fc27_market_app_v1';
+  let state={...defaults};
+  try{
+    const saved=JSON.parse(localStorage.getItem(key)||'{}');
+    state={...state,...saved};
+  }catch{}
+
+  function load(){
+    Object.keys(defaults).forEach(k=>{
+      const el=$(k);
+      if(el) el.value=state[k];
+    });
+  }
+
+  function save(){
+    Object.keys(defaults).forEach(k=>{
+      const el=$(k);
+      if(el) state[k]=el.type==='number'?Number(el.value)||0:el.value;
+    });
+    localStorage.setItem(key,JSON.stringify(state));
+    $('savedChip').textContent='Saved';
+    clearTimeout(window._savedTimer);
+    window._savedTimer=setTimeout(()=>$('savedChip').textContent='Saved locally',900);
+  }
+
+  function reserve(){
+    const b=state.bankroll||0;
+    if(state.risk==='low') return Math.round(b*.40);
+    if(state.risk==='high') return Math.round(b*.20);
+    return Math.round(b*(20/70));
+  }
+
+  function ratingRows(){
+    const discountByRating={84:.00,85:.00,86:.15,87:.15,88:.15};
+    const labels={
+      84:'Low-cost fodder',
+      85:'Best cheap fodder setup',
+      86:'Reward-dip target',
+      87:'Reward-dip target',
+      88:'Higher-capital target'
+    };
+    return [84,85,86,87,88].map(r=>{
+      const price=state['p'+r]||0;
+      let trigger;
+      if(r===84) trigger=price;
+      else if(r===85) trigger=Math.min(1200,price);
+      else trigger=floor50(price*(1-discountByRating[r]));
+      const possible=(price*.95)-trigger;
+      const roi=trigger>0?possible/trigger*100:0;
+      let status='watch';
+      if(r===85 && trigger<=1200) status='best';
+      else if(possible>=state.minProfit && roi>=state.minRoi) status='best';
+      else if(r===88 && state.bankroll<100000) status='low';
+      return {r,price,trigger,possible,roi,status,label:labels[r]};
+    });
+  }
+
+  function renderOppCard(x){
+    const cls=x.status==='best'?'best':x.status==='low'?'low':'watch';
+    const pill=x.status==='best'?'good':'warn';
+    const label=x.status==='best'?'BUY SETUP':x.status==='low'?'LOW PRIORITY':'WATCH';
+    const sell=x.r===84||x.r===85?'SBC demand spike':'Floor recovery / SBC demand';
+    return `
+      <div class="opp ${cls}">
+        <div class="opp-head">
+          <div>
+            <div class="opp-name">${x.r}-rated fodder</div>
+            <div class="opp-meta">${x.label}</div>
+          </div>
+          <span class="pill ${pill}">${label}</span>
+        </div>
+        <div class="opp-grid">
+          <div class="mini"><span>Saved floor</span><strong>${money(x.price)}</strong></div>
+          <div class="mini"><span>Buy trigger</span><strong class="goodtxt">≤ ${money(x.trigger)}</strong></div>
+          <div class="mini"><span>Sell trigger</span><strong>${sell}</strong></div>
+        </div>
+      </div>`;
+  }
+
+  function render(){
+    state.bankroll=Number($('bankroll').value)||0;
+    state.risk=$('risk').value;
+    state.minProfit=Number($('minProfit').value)||0;
+    state.minRoi=Number($('minRoi').value)||0;
+    [84,85,86,87,88].forEach(r=>state['p'+r]=Number($('p'+r).value)||0);
+
+    $('bankrollKpi').textContent=money(state.bankroll);
+    $('reserveKpi').textContent=money(reserve());
+    $('deployKpi').textContent=money(Math.max(0,state.bankroll-reserve()));
+
+    const rows=ratingRows();
+    const ranked=[...rows].sort((a,b)=>{
+      const sa=(a.status==='best'?1000:0)+a.possible+(a.roi*10);
+      const sb=(b.status==='best'?1000:0)+b.possible+(b.roi*10);
+      return sb-sa;
+    });
+
+    $('topOpps').innerHTML=ranked.slice(0,3).map(renderOppCard).join('');
+    $('oppList').innerHTML=ranked.map(renderOppCard).join('');
+
+    $('floorTable').innerHTML=rows.map(x=>`
+      <tr>
+        <td>${x.r}</td>
+        <td>${money(x.price)}</td>
+        <td>≤ ${money(x.trigger)}</td>
+        <td>${x.label}</td>
+      </tr>`).join('');
+  }
+
+  function bindInputs(){
+    ['bankroll','risk','minProfit','minRoi','p84','p85','p86','p87','p88'].forEach(id=>{
+      const el=$(id);
+      el.addEventListener('input',()=>{save();render()});
+      el.addEventListener('change',()=>{save();render()});
+    });
+  }
+
+  document.querySelectorAll('.nav button').forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      document.querySelectorAll('.nav button').forEach(b=>b.classList.remove('active'));
+      document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+      btn.classList.add('active');
+      $(btn.dataset.view).classList.add('active');
+      window.scrollTo({top:0,behavior:'smooth'});
+    });
+  });
+
+  $('installHelp').addEventListener('click',()=>{
+    $('installTip').classList.add('show');
+    document.querySelectorAll('.nav button').forEach(b=>b.classList.remove('active'));
+    document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+    document.querySelector('[data-view="dashboard"]').classList.add('active');
+    $('dashboard').classList.add('active');
+    window.scrollTo({top:0,behavior:'smooth'});
+  });
+
+  $('reset').addEventListener('click',()=>{
+    if(confirm('Reset your saved bankroll, prices and preferences?')){
+      state={...defaults};
+      localStorage.removeItem(key);
+      load();render();save();
+    }
+  });
+
+  const isStandalone=window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone===true;
+  if(!isStandalone) $('installTip').classList.add('show');
+
+  load();
+  bindInputs();
+  render();
+  save();
+
+  if('serviceWorker' in navigator){
+    window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));
+  }
+})();
+</script>
+</body>
+</html>
